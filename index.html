@@ -307,7 +307,7 @@
           if(resJson && resJson.ok === false) throw new Error(resJson.message||'Sheets rejected');
           success.style.display='block';
           form.reset();
-        } else if(FORMSPREE_ENDPOINT){
+        } else if (typeof FORMSPREE_ENDPOINT !== "undefined" && FORMSPREE_ENDPOINT) 
           const resp = await fetch(FORMSPREE_ENDPOINT,{
             method:'POST',
             headers:{'Accept':'application/json','Content-Type':'application/json'},
@@ -332,7 +332,7 @@
             `Consent: ${data.consent ? 'Yes' : 'No'}`,
             `Updates Opt‑in: ${data.updates ? 'Yes' : 'No'}`
           ].join('%0D%0A');
-          window.location.href = `mailto:${encodeURIComponent("info@cranbourneeaglesjfc.au")}?subject=${subject}&body=${bodyLines}`;
+          window.location.href = `mailto:${encodeURIComponent("info@cranbournejfc.com.au")}?subject=${subject}&body=${bodyLines}`;
           success.style.display='block';
           triggerCSVDownload(data);
           form.reset();
@@ -345,37 +345,6 @@
     });
   </script>
 
-  <!--
-    ✅ Google Sheets (Apps Script) Setup — 3 minute guide
-    1) Create a Google Sheet named, e.g., "GF Day EOI".
-    2) Extensions → Apps Script. Paste this code and deploy as Web App:
 
-    function doPost(e){
-      try{
-        var data = JSON.parse(e.postData.contents);
-        var ss = SpreadsheetApp.openById('PUT_SHEET_ID_HERE');
-        var sh = ss.getSheetByName('Sheet1') || ss.getSheets()[0];
-        if (sh.getLastRow() === 0){
-          sh.appendRow(['Timestamp','Full Name','Email','Phone','Affiliation','Availability','WWCC','WWCC Expiry','Roles','Notes','Consent','Updates']);
-        }
-        sh.appendRow([
-          data.ts, data.fullName, data.email, data.phone, data.affiliation,
-          data.availability, data.wwcc, data.wwccExpiry, (data.roles||[]).join('; '),
-          data.notes, data.consent ? 'Yes':'No', data.updates ? 'Yes':'No'
-        ]);
-        return ContentService.createTextOutput(JSON.stringify({ok:true}))
-              .setMimeType(ContentService.MimeType.JSON)
-              .setHeaders({'Access-Control-Allow-Origin':'*'});
-      }catch(err){
-        return ContentService.createTextOutput(JSON.stringify({ok:false,message:String(err)}))
-              .setMimeType(ContentService.MimeType.JSON)
-              .setHeaders({'Access-Control-Allow-Origin':'*'});
-      }
-    }
-
-    3) Replace SHEETS_ENDPOINT above with the Web App URL.
-       • Deployment: "Execute as Me" • Access: "Anyone" (or "Anyone with the link").
-       • Optional: add a simple token check.
-  -->
 </body>
 </html>
