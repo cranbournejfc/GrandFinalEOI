@@ -204,7 +204,7 @@
 
     function getFormData(){
       const data = new FormData(form);
-      const roles = [...document.querySelectorAll('input[name="roles"]:checked')].map(i=>i.value);
+      const roles = data.getAll('roles');
       return {
         fullName: data.get('fullName')?.trim() || "",
         email: data.get('email')?.trim() || "",
