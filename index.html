@@ -85,6 +85,10 @@
       .roles{grid-template-columns:1fr}
     }
 
+    /*/* Helper error styles */
+    .error-note{display:none;color:#8b2121;font-size:.9rem;margin-top:6px}
+    .invalid{border-color:#e07c7c!important; box-shadow:0 0 0 4px rgba(224,124,124,.25)!important}
+
     /* Subtle divider */
     .divider{height:1px;background:linear-gradient(90deg,transparent,#e5eaf4,transparent);margin:10px 0 6px}
   </style>
@@ -105,6 +109,13 @@
       <h2 style="margin:10px 0 6px">Volunteer details</h2>
       <p class="foot" style="margin:0 0 10px">Fields marked <span class="req">*</span> are required.</p>
       <div class="divider"></div>
+
+      <!--
+        SUBMISSION OPTIONS (choose one):
+        1) Formspree: set FORMSPREE_ENDPOINT below to your endpoint URL. Works on GitHub Pages.
+        2) Fallback email: if endpoint is left blank, the form will open a pre-filled email.
+        3) CSV: regardless of method, a CSV of the entry is generated for your records.
+      -->
 
       <form id="eoiForm" novalidate>
         <div class="field half">
@@ -146,18 +157,8 @@
 
         <div class="field">
           <label>Areas you can help with <span class="req">*</span></label>
-          <div class="roles" id="rolesBox">
-            <label><input type="checkbox" name="roles" value="Set‑up / Pack‑down" /> Set‑up / Pack‑down</label>
-            <label><input type="checkbox" name="roles" value="Ground Marshal" /> Ground Marshal</label>
-            <label><input type="checkbox" name="roles" value="Scoreboard / Timekeeper" /> Scoreboard / Timekeeper</label>
-            <label><input type="checkbox" name="roles" value="Canteen" /> Canteen</label>
-            <label><input type="checkbox" name="roles" value="BBQ" /> BBQ</label>
-            <label><input type="checkbox" name="roles" value="Runner / General support" /> Runner / General support</label>
-            <label><input type="checkbox" name="roles" value="First Aid (qualified)" /> First Aid (qualified)</label>
-            <label><input type="checkbox" name="roles" value="Umpire Escort" /> Umpire Escort</label>
-            <label><input type="checkbox" name="roles" value="Photography / Media" /> Photography / Media</label>
-            <label><input type="checkbox" name="roles" value="Other" /> Other (detail below)</label>
-          </div>
+          $1
+            <div id=\"rolesError\" class=\"error-note\">Please select at least one area you can help with.</div>
         </div>
 
         <div class="field">
@@ -194,7 +195,7 @@
   </div>
 
   <script>
-    const SHEETS_ENDPOINT = ""; //"https://script.google.com/macros/library/d/1qopDKfXLkhGQb7pKDU9DSjtwxy2_RJ6O8jRx_u56cNUCh5ma2yKtvht5/3"
+    const SHEETS_ENDPOINT = ""; //https://script.google.com/macros/library/d/1qopDKfXLkhGQb7pKDU9DSjtwxy2_RJ6O8jRx_u56cNUCh5ma2yKtvht5/3
 
     const form = document.getElementById('eoiForm');
     const success = document.getElementById('formSuccess');
@@ -224,7 +225,8 @@
     function validate(data){
       if(!data.fullName || !data.email || !data.phone || !data.availability || !data.consent) return false;
       if(!data.roles.length) return false;
-      const emailOk = /.+@+.\..+/.test(data.email);
+      // basic email + phone sanity checks (non-blocking)
+      const emailOk = /.+@.+\..+/.test(data.email);
       const phoneOk = /\d{8,}/.test(data.phone.replace(/\D/g, ''));
       return emailOk && phoneOk;
     }
@@ -236,7 +238,7 @@
       const values = [
         obj.ts, obj.fullName, obj.email, obj.phone, obj.affiliation, obj.availability, obj.wwcc, obj.wwccExpiry, obj.roles.join('; '), obj.notes, obj.consent? 'Yes':'No', obj.updates? 'Yes':'No'
       ];
-      return [headers.join(','), values.map(v=>`\"${String(v).replaceAll('\"','\"\"')}\"`).join(',')].join('\n');
+      return [headers.join(','), values.map(v=>`"${String(v).replaceAll('"','""')}"`).join(',')].join('\n');
     }
 
     function triggerCSVDownload(obj){
@@ -251,6 +253,16 @@
 
     document.getElementById('downloadCSV').addEventListener('click', ()=>{
       const data = getFormData();
+      // Visual feedback for roles selection
+      const rolesBox = document.getElementById('rolesBox');
+      const rolesError = document.getElementById('rolesError');
+      if(!data.roles || !data.roles.length){
+        rolesBox.classList.add('invalid');
+        rolesError.style.display = 'block';
+      }else{
+        rolesBox.classList.remove('invalid');
+        rolesError.style.display = 'none';
+      }
       if(!validate(data)){
         errorBox.textContent = 'Please complete required fields before downloading the CSV.';
         errorBox.style.display = 'block';
@@ -293,6 +305,7 @@
           success.style.display='block';
           form.reset();
         } else {
+          // Fallback: compose an email
           const subject = encodeURIComponent('GF Day Helpers EOI – ' + data.fullName);
           const bodyLines = [
             `Timestamp: ${data.ts}`,
@@ -308,7 +321,7 @@
             `Consent: ${data.consent ? 'Yes' : 'No'}`,
             `Updates Opt‑in: ${data.updates ? 'Yes' : 'No'}`
           ].join('%0D%0A');
-          window.location.href = `mailto:${encodeURIComponent("info@cranbourneeaglesjfc.au")}?subject=${subject}&body=${bodyLines}`;
+          window.location.href = `mailto:${encodeURIComponent(CLUB_EMAIL)}?subject=${subject}&body=${bodyLines}`;
           success.style.display='block';
           triggerCSVDownload(data);
           form.reset();
@@ -319,11 +332,42 @@
         errorBox.style.display='block';
       }
     });
+          if(!resp.ok) throw new Error('Network response was not ok');
+          success.style.display='block';
+          form.reset();
+        }else{
+          // Fallback: compose an email
+          const subject = encodeURIComponent('GF Day Helpers EOI – ' + data.fullName);
+          const bodyLines = [
+            `Timestamp: ${data.ts}`,
+            `Name: ${data.fullName}`,
+            `Email: ${data.email}`,
+            `Phone: ${data.phone}`,
+            `Affiliation: ${data.affiliation}`,
+            `Availability: ${data.availability}`,
+            `WWCC: ${data.wwcc}`,
+            `WWCC Expiry: ${data.wwccExpiry}`,
+            `Roles: ${data.roles.join('; ')}`,
+            `Notes: ${data.notes}`,
+            `Consent: ${data.consent ? 'Yes' : 'No'}`,
+            `Updates Opt‑in: ${data.updates ? 'Yes' : 'No'}`
+          ].join('%0D%0A');
+          window.location.href = `mailto:${encodeURIComponent(CLUB_EMAIL)}?subject=${subject}&body=${bodyLines}`;
+          success.style.display='block';
+          // Optionally also trigger a CSV download so the volunteer keeps a copy
+          triggerCSVDownload(data);
+          form.reset();
+        }
+      }catch(err){
+        console.error(err);
+        errorBox.textContent = 'Submission failed. Please try again or email us directly.';
+        errorBox.style.display='block';
+      }
+    });
   </script>
-
   <!--
     ✅ Google Sheets (Apps Script) Setup — 3 minute guide
-    1) Create a Google Sheet named, e.g., "GF Day EOI".
+    1) Create a Google Sheet named, e.g., "GF Day EOI". Keep headers optional.
     2) Extensions → Apps Script. Paste this code and deploy as Web App:
 
     function doPost(e){
@@ -355,3 +399,4 @@
   -->
 </body>
 </html>
+
