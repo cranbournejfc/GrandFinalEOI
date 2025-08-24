@@ -85,7 +85,7 @@
       .roles{grid-template-columns:1fr}
     }
 
-    /* Helper error styles */
+    /*/* Helper error styles */
     .error-note{display:none;color:#8b2121;font-size:.9rem;margin-top:6px}
     .invalid{border-color:#e07c7c!important; box-shadow:0 0 0 4px rgba(224,124,124,.25)!important}
 
@@ -109,6 +109,13 @@
       <h2 style="margin:10px 0 6px">Volunteer details</h2>
       <p class="foot" style="margin:0 0 10px">Fields marked <span class="req">*</span> are required.</p>
       <div class="divider"></div>
+
+      <!--
+        SUBMISSION OPTIONS (choose one):
+        1) Formspree: set FORMSPREE_ENDPOINT below to your endpoint URL. Works on GitHub Pages.
+        2) Fallback email: if endpoint is left blank, the form will open a pre-filled email.
+        3) CSV: regardless of method, a CSV of the entry is generated for your records.
+      -->
 
       <form id="eoiForm" novalidate>
         <div class="field half">
@@ -150,19 +157,8 @@
 
         <div class="field">
           <label>Areas you can help with <span class="req">*</span></label>
-          <div class="roles" id="rolesBox">
-            <label><input type="checkbox" name="roles" value="Set‑up / Pack‑down" /> Set‑up / Pack‑down</label>
-            <label><input type="checkbox" name="roles" value="Ground Marshal" /> Ground Marshal</label>
-            <label><input type="checkbox" name="roles" value="Scoreboard / Timekeeper" /> Scoreboard / Timekeeper</label>
-            <label><input type="checkbox" name="roles" value="Canteen" /> Canteen</label>
-            <label><input type="checkbox" name="roles" value="BBQ" /> BBQ</label>
-            <label><input type="checkbox" name="roles" value="Runner / General support" /> Runner / General support</label>
-            <label><input type="checkbox" name="roles" value="First Aid (qualified)" /> First Aid (qualified)</label>
-            <label><input type="checkbox" name="roles" value="Umpire Escort" /> Umpire Escort</label>
-            <label><input type="checkbox" name="roles" value="Photography / Media" /> Photography / Media</label>
-            <label><input type="checkbox" name="roles" value="Other" /> Other (detail below)</label>
-          </div>
-            <div id="rolesError" class="error-note">Please select at least one area you can help with.</div>
+          $1
+            <div id=\"rolesError\" class=\"error-note\">Please select at least one area you can help with.</div>
         </div>
 
         <div class="field">
@@ -192,14 +188,17 @@
         <div id="formError" class="error" role="status">Something went wrong. Please check required fields and try again.</div>
       </form>
 
-      <p class="foot">Questions? Email <a href="mailto:info@cranbournejfc.com.au">info@cranbournejfc.com.au</a></p>
+      <p class="foot">Questions? Email <a href="mailto:info@cranbourneeaglesjfc.au">info@cranbourneeaglesjfc.au</a></p>
     </main>
 
     <footer class="foot">© <span id="year"></span> Cranbourne Eagles Junior Football Club • “We fly as one”</footer>
   </div>
 
   <script>
-    const SHEETS_ENDPOINT = ""; //https://script.google.com/macros/s/AKfycbymZ9dNYgy0ZuWJ4lpI5L7VbnLTYg4PSfHzoecfybj0NdaMACDvSXadntOqQBvuPSWu/exec
+    const SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbymZ9dNYgy0ZuWJ4lpI5L7VbnLTYg4PSfHzoecfybj0NdaMACDvSXadntOqQBvuPSWu/exec"; // Google Apps Script Web App URL
+    const FORMSPREE_ENDPOINT = ""; // optional fallback e.g. "https://formspree.io/f/xxxxxxxx"
+    const CLUB_EMAIL = "info@cranbourneeaglesjfc.au"; // used for mailto fallback
+
     const form = document.getElementById('eoiForm');
     const success = document.getElementById('formSuccess');
     const errorBox = document.getElementById('formError');
@@ -228,6 +227,7 @@
     function validate(data){
       if(!data.fullName || !data.email || !data.phone || !data.availability || !data.consent) return false;
       if(!data.roles.length) return false;
+      // basic email + phone sanity checks (non-blocking)
       const emailOk = /.+@.+\..+/.test(data.email);
       const phoneOk = /\d{8,}/.test(data.phone.replace(/\D/g, ''));
       return emailOk && phoneOk;
@@ -240,7 +240,7 @@
       const values = [
         obj.ts, obj.fullName, obj.email, obj.phone, obj.affiliation, obj.availability, obj.wwcc, obj.wwccExpiry, obj.roles.join('; '), obj.notes, obj.consent? 'Yes':'No', obj.updates? 'Yes':'No'
       ];
-      return [headers.join(','), values.map(v=>`\"${String(v).replaceAll('\"','\"\"')}\"`).join(',')].join('\n');
+      return [headers.join(','), values.map(v=>`"${String(v).replaceAll('"','""')}"`).join(',')].join('\n');
     }
 
     function triggerCSVDownload(obj){
@@ -279,16 +279,6 @@
       success.style.display = 'none';
       errorBox.style.display = 'none';
       const data = getFormData();
-      // Visual feedback for roles selection
-      const rolesBox = document.getElementById('rolesBox');
-      const rolesError = document.getElementById('rolesError');
-      if(!data.roles || !data.roles.length){
-        rolesBox.classList.add('invalid');
-        rolesError.style.display = 'block';
-      }else{
-        rolesBox.classList.remove('invalid');
-        rolesError.style.display = 'none';
-      }
       if(!validate(data)){
         errorBox.textContent = 'Please complete all required fields (including at least one role).';
         errorBox.style.display = 'block';
@@ -297,17 +287,30 @@
       // Priority: Google Sheets (Apps Script) → Formspree → mailto fallback
       try{
         if(SHEETS_ENDPOINT){
-          const resp = await fetch(SHEETS_ENDPOINT, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-          });
-          if(!resp.ok) throw new Error('Sheets endpoint error');
-          const resJson = await resp.json().catch(()=>({}));
-          if(resJson && resJson.ok === false) throw new Error(resJson.message||'Sheets rejected');
-          success.style.display='block';
-          form.reset();
-        } else if (typeof FORMSPREE_ENDPOINT !== "undefined" && FORMSPREE_ENDPOINT) 
+          // Try normal CORS JSON POST first
+          try{
+            const resp = await fetch(SHEETS_ENDPOINT, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data),
+            });
+            if(!resp.ok) throw new Error('Sheets endpoint error: '+resp.status);
+            // Best-effort parse; Apps Script may not return JSON with CORS allowing us to read it
+            try { const resJson = await resp.json(); if(resJson && resJson.ok === false) throw new Error(resJson.message||'Sheets rejected'); } catch(_){}
+            success.style.display='block';
+            form.reset();
+          }catch(primaryErr){
+            // Retry with no-cors/plain to bypass preflight/CORS. We assume success if no network error.
+            await fetch(SHEETS_ENDPOINT, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify(data),
+            });
+            success.style.display='block';
+            form.reset();
+          }
+        } else if(FORMSPREE_ENDPOINT){
           const resp = await fetch(FORMSPREE_ENDPOINT,{
             method:'POST',
             headers:{'Accept':'application/json','Content-Type':'application/json'},
@@ -317,6 +320,7 @@
           success.style.display='block';
           form.reset();
         } else {
+          // Fallback: compose an email
           const subject = encodeURIComponent('GF Day Helpers EOI – ' + data.fullName);
           const bodyLines = [
             `Timestamp: ${data.ts}`,
@@ -332,7 +336,7 @@
             `Consent: ${data.consent ? 'Yes' : 'No'}`,
             `Updates Opt‑in: ${data.updates ? 'Yes' : 'No'}`
           ].join('%0D%0A');
-          window.location.href = `mailto:${encodeURIComponent("info@cranbournejfc.com.au")}?subject=${subject}&body=${bodyLines}`;
+          window.location.href = `mailto:${encodeURIComponent(CLUB_EMAIL)}?subject=${subject}&body=${bodyLines}`;
           success.style.display='block';
           triggerCSVDownload(data);
           form.reset();
@@ -343,8 +347,70 @@
         errorBox.style.display='block';
       }
     });
+          if(!resp.ok) throw new Error('Network response was not ok');
+          success.style.display='block';
+          form.reset();
+        }else{
+          // Fallback: compose an email
+          const subject = encodeURIComponent('GF Day Helpers EOI – ' + data.fullName);
+          const bodyLines = [
+            `Timestamp: ${data.ts}`,
+            `Name: ${data.fullName}`,
+            `Email: ${data.email}`,
+            `Phone: ${data.phone}`,
+            `Affiliation: ${data.affiliation}`,
+            `Availability: ${data.availability}`,
+            `WWCC: ${data.wwcc}`,
+            `WWCC Expiry: ${data.wwccExpiry}`,
+            `Roles: ${data.roles.join('; ')}`,
+            `Notes: ${data.notes}`,
+            `Consent: ${data.consent ? 'Yes' : 'No'}`,
+            `Updates Opt‑in: ${data.updates ? 'Yes' : 'No'}`
+          ].join('%0D%0A');
+          window.location.href = `mailto:${encodeURIComponent(CLUB_EMAIL)}?subject=${subject}&body=${bodyLines}`;
+          success.style.display='block';
+          // Optionally also trigger a CSV download so the volunteer keeps a copy
+          triggerCSVDownload(data);
+          form.reset();
+        }
+      }catch(err){
+        console.error(err);
+        errorBox.textContent = 'Submission failed. Please try again or email us directly.';
+        errorBox.style.display='block';
+      }
+    });
   </script>
+  <!--
+    ✅ Google Sheets (Apps Script) Setup — 3 minute guide
+    1) Create a Google Sheet named, e.g., "GF Day EOI". Keep headers optional.
+    2) Extensions → Apps Script. Paste this code and deploy as Web App:
 
+    function doPost(e){
+      try{
+        var data = JSON.parse(e.postData.contents);
+        var ss = SpreadsheetApp.openById('PUT_SHEET_ID_HERE');
+        var sh = ss.getSheetByName('Sheet1') || ss.getSheets()[0];
+        if (sh.getLastRow() === 0){
+          sh.appendRow(['Timestamp','Full Name','Email','Phone','Affiliation','Availability','WWCC','WWCC Expiry','Roles','Notes','Consent','Updates']);
+        }
+        sh.appendRow([
+          data.ts, data.fullName, data.email, data.phone, data.affiliation,
+          data.availability, data.wwcc, data.wwccExpiry, (data.roles||[]).join('; '),
+          data.notes, data.consent ? 'Yes':'No', data.updates ? 'Yes':'No'
+        ]);
+        return ContentService.createTextOutput(JSON.stringify({ok:true}))
+              .setMimeType(ContentService.MimeType.JSON)
+              
+      }catch(err){
+        return ContentService.createTextOutput(JSON.stringify({ok:false,message:String(err)}))
+              .setMimeType(ContentService.MimeType.JSON)
+              
+      }
+    }
 
+    3) Replace SHEETS_ENDPOINT above with the Web App URL.
+       • Deployment: "Execute as Me" • Access: "Anyone" (or "Anyone with the link").
+       • Optional: add a simple token check.
+  -->
 </body>
 </html>
