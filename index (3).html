@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cranbourne Eagles JFC • Grand Final Day Helpers – Expression of Interest</title>
+  <meta name="description" content="Volunteer Expression of Interest form for Cranbourne Eagles JFC Grand Final Day." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      /* Club colours (adjust if needed) */
+      --eagles-blue:#0A2E6B; /* deep navy */
+      --eagles-gold:#FDB515; /* gold */
+      --ink:#0b1220;
+      --muted:#566173;
+      --bg:#f7f8fb;
+      --card:#ffffff;
+      --ring:rgba(10,46,107,.25);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,Apple Color Emoji,Segoe UI Emoji;color:var(--ink)}
+    .wrap{max-width:1000px;margin-inline:auto;padding:20px}
+
+    .brand{
+      background:linear-gradient(135deg,var(--eagles-blue),#041b3e);
+      color:white;
+      border-radius:var(--radius);
+      padding:24px;
+      display:flex;gap:18px;align-items:center;
+      box-shadow:0 10px 30px rgba(4,27,62,.25);
+      position:relative;overflow:hidden;
+    }
+    .brand::after{
+      content:"";position:absolute;inset:auto -10% -40% -10%;height:180px;
+      background:radial-gradient(120px 120px at 50% 50%,rgba(253,181,21,.35),transparent 70%);
+      filter:blur(15px);
+    }
+    .brand img{height:74px;width:auto;object-fit:contain;flex:0 0 auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,.3))}
+    .brand h1{margin:0;font-size:clamp(20px,2.5vw,32px);line-height:1.1}
+    .brand p{margin:.35rem 0 0;color:var(--eagles-gold)}
+
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:0 6px 20px rgba(10,46,107,.12);padding:22px}
+
+    .badge{display:inline-flex;align-items:center;gap:.5ch;background:rgba(253,181,21,.15);color:var(--eagles-gold);border:1px solid rgba(253,181,21,.5);border-radius:999px;padding:.35rem .7rem;font-weight:700;letter-spacing:.02em;text-transform:uppercase;font-size:.75rem}
+
+    form{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:14px}
+    .field{grid-column:span 12}
+    .field.half{grid-column:span 6}
+    .field.third{grid-column:span 4}
+    label{display:block;font-weight:600;margin:6px 0}
+    input[type="text"], input[type="email"], input[type="tel"], input[type="date"], select, textarea{
+      width:100%;padding:12px 14px;border:1.5px solid #d8deea;border-radius:12px;background:#fff;font:inherit;color:var(--ink);
+      outline:none;transition:border-color .2s, box-shadow .2s;
+    }
+    textarea{min-height:110px;resize:vertical}
+    input:focus, select:focus, textarea:focus{border-color:var(--eagles-blue);box-shadow:0 0 0 4px var(--ring)}
+
+    .checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .checks label{display:flex;align-items:flex-start;gap:10px;font-weight:500}
+    .checks input{margin-top:3px}
+
+    .roles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px;background:#fbfcff;border:1px dashed #d8deea;border-radius:12px}
+
+    .actions{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{appearance:none;border:none;border-radius:14px;padding:12px 18px;font-weight:800;cursor:pointer}
+    .btn.primary{background:var(--eagles-gold);color:#1a1600}
+    .btn.secondary{background:transparent;color:var(--eagles-blue);border:2px solid var(--eagles-blue)}
+    .btn:focus-visible{outline:4px solid var(--ring)}
+
+    .foot{text-align:center;color:var(--muted);font-size:.9rem;margin:14px 0}
+
+    .success,.error{display:none;margin-top:12px;padding:12px 14px;border-radius:12px;font-weight:600}
+    .success{background:#e8f7ee;border:1px solid #b7e6c7;color:#0b5d2a}
+    .error{background:#fdeaea;border:1px solid #f3b0b0;color:#8b2121}
+
+    .req{color:var(--eagles-gold)}
+
+    @media (max-width:820px){
+      .field.half,.field.third{grid-column:span 12}
+      .checks{grid-template-columns:1fr}
+      .roles{grid-template-columns:1fr}
+    }
+
+    /* Helper error styles */
+    .error-note{display:none;color:#8b2121;font-size:.9rem;margin-top:6px}
+    .invalid{border-color:#e07c7c!important; box-shadow:0 0 0 4px rgba(224,124,124,.25)!important}
+
+    /* Subtle divider */
+    .divider{height:1px;background:linear-gradient(90deg,transparent,#e5eaf4,transparent);margin:10px 0 6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="brand card">
+      <!-- Replace src with your official logo asset in the same folder (e.g. eagles-logo.png) -->
+      <img src="eagles-logo.png" alt="Cranbourne Eagles JFC logo" />
+      <div>
+        <h1>Cranbourne Eagles JFC — Grand Final Day Helpers</h1>
+        <p>Register your interest to help on Grand Final day. Together, we fly as one! 🦅</p>
+      </div>
+    </header>
+
+    <main class="card" style="margin-top:18px">
+      <span class="badge">Expression of Interest</span>
+      <h2 style="margin:10px 0 6px">Volunteer details</h2>
+      <p class="foot" style="margin:0 0 10px">Fields marked <span class="req">*</span> are required.</p>
+      <div class="divider"></div>
+
+      <form id="eoiForm" novalidate>
+        <div class="field half">
+          <label for="fullName">Full name <span class="req">*</span></label>
+          <input id="fullName" name="fullName" type="text" required placeholder="Your name" autocomplete="name" />
+        </div>
+        <div class="field half">
+          <label for="email">Email <span class="req">*</span></label>
+          <input id="email" name="email" type="email" required placeholder="you@example.com" autocomplete="email" />
+        </div>
+        <div class="field half">
+          <label for="phone">Mobile <span class="req">*</span></label>
+          <input id="phone" name="phone" type="tel" required placeholder="04xx xxx xxx" autocomplete="tel" />
+        </div>
+        <div class="field half">
+          <label for="affiliation">Team/affiliation (optional)</label>
+          <input id="affiliation" name="affiliation" type="text" placeholder="e.g. U11 Boys Blue / Parent / Life Member" />
+        </div>
+
+        <div class="field third">
+          <label for="availability">Availability <span class="req">*</span></label>
+          <select id="availability" name="availability" required>
+            <option value="">Select…</option>
+            <option>Early setup (7:00–9:00)</option>
+            <option>Morning (9:00–12:00)</option>
+            <option>Midday (12:00–15:00)</option>
+            <option>Afternoon pack‑down (15:00–18:00)</option>
+            <option>All day</option>
+          </select>
+        </div>
+        <div class="field third">
+          <label for="wwcc">WWCC number (if applicable)</label>
+          <input id="wwcc" name="wwcc" type="text" placeholder="Working With Children Check" />
+        </div>
+        <div class="field third">
+          <label for="wwccExpiry">WWCC expiry</label>
+          <input id="wwccExpiry" name="wwccExpiry" type="date" />
+        </div>
+
+        <div class="field">
+          <label>Areas you can help with <span class="req">*</span></label>
+          <div class="roles" id="rolesBox">
+            <label><input type="checkbox" name="roles" value="Set‑up / Pack‑down" /> Set‑up / Pack‑down</label>
+            <label><input type="checkbox" name="roles" value="Ground Marshal" /> Ground Marshal</label>
+            <label><input type="checkbox" name="roles" value="Scoreboard / Timekeeper" /> Scoreboard / Timekeeper</label>
+            <label><input type="checkbox" name="roles" value="Canteen" /> Canteen</label>
+            <label><input type="checkbox" name="roles" value="BBQ" /> BBQ</label>
+            <label><input type="checkbox" name="roles" value="Runner / General support" /> Runner / General support</label>
+            <label><input type="checkbox" name="roles" value="First Aid (qualified)" /> First Aid (qualified)</label>
+            <label><input type="checkbox" name="roles" value="Umpire Escort" /> Umpire Escort</label>
+            <label><input type="checkbox" name="roles" value="Photography / Media" /> Photography / Media</label>
+            <label><input type="checkbox" name="roles" value="Other" /> Other (detail below)</label>
+          </div>
+            <div id="rolesError" class="error-note">Please select at least one area you can help with.</div>
+        </div>
+
+        <div class="field">
+          <label for="notes">Notes (experience / preferred role / availability detail)</label>
+          <textarea id="notes" name="notes" placeholder="Anything we should know"></textarea>
+        </div>
+
+        <div class="field">
+          <div class="checks">
+            <label>
+              <input type="checkbox" id="consent" name="consent" required />
+              <span>I consent to Cranbourne Eagles JFC contacting me about Grand Final Day volunteer roles. <span class="req">*</span></span>
+            </label>
+            <label>
+              <input type="checkbox" id="updates" name="updates" />
+              <span>Keep me updated about future volunteer opportunities.</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="actions field">
+          <button class="btn primary" type="submit">Submit EOI</button>
+          <button class="btn secondary" type="button" id="downloadCSV">Download CSV of this entry</button>
+        </div>
+
+        <div id="formSuccess" class="success" role="status">Thank you — your EOI has been received. We’ll be in touch soon. 🦅</div>
+        <div id="formError" class="error" role="status">Something went wrong. Please check required fields and try again.</div>
+      </form>
+
+      <p class="foot">Questions? Email <a href="mailto:info@cranbourneeaglesjfc.au">info@cranbourneeaglesjfc.au</a></p>
+    </main>
+
+    <footer class="foot">© <span id="year"></span> Cranbourne Eagles Junior Football Club • “We fly as one”</footer>
+  </div>
+
+  <script>
+    const SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbymZ9dNYgy0ZuWJ4lpI5L7VbnLTYg4PSfHzoecfybj0NdaMACDvSXadntOqQBvuPSWu/exec"; // e.g. "https://script.google.com/macros/s/AKfycbx.../exec" (Google Apps Script Web App)
+    const FORMSPREE_ENDPOINT = ""; // optional fallback e.g. "https://formspree.io/f/xxxxxxxx"
+    const CLUB_EMAIL = "info@cranbourneeaglesjfc.au"; // used for mailto fallback
+
+    const form = document.getElementById('eoiForm');
+    const success = document.getElementById('formSuccess');
+    const errorBox = document.getElementById('formError');
+    const year = document.getElementById('year');
+    year.textContent = new Date().getFullYear();
+
+    function getFormData(){
+      const data = new FormData(form);
+      const roles = data.getAll('roles');
+      return {
+        fullName: data.get('fullName')?.trim() || "",
+        email: data.get('email')?.trim() || "",
+        phone: data.get('phone')?.trim() || "",
+        affiliation: data.get('affiliation')?.trim() || "",
+        availability: data.get('availability') || "",
+        wwcc: data.get('wwcc')?.trim() || "",
+        wwccExpiry: data.get('wwccExpiry') || "",
+        roles,
+        notes: data.get('notes')?.trim() || "",
+        consent: !!data.get('consent'),
+        updates: !!data.get('updates'),
+        ts: new Date().toISOString()
+      };
+    }
+
+    function validate(data){
+      if(!data.fullName || !data.email || !data.phone || !data.availability || !data.consent) return false;
+      if(!data.roles.length) return false;
+      const emailOk = /.+@.+\..+/.test(data.email);
+      const phoneOk = /\d{8,}/.test(data.phone.replace(/\D/g, ''));
+      return emailOk && phoneOk;
+    }
+
+    function asCSVRow(obj){
+      const headers = [
+        'Timestamp','Full Name','Email','Phone','Affiliation','Availability','WWCC','WWCC Expiry','Roles','Notes','Consent','Updates'
+      ];
+      const values = [
+        obj.ts, obj.fullName, obj.email, obj.phone, obj.affiliation, obj.availability, obj.wwcc, obj.wwccExpiry, obj.roles.join('; '), obj.notes, obj.consent? 'Yes':'No', obj.updates? 'Yes':'No'
+      ];
+      return [headers.join(','), values.map(v=>`\"${String(v).replaceAll('\"','\"\"')}\"`).join(',')].join('\n');
+    }
+
+    function triggerCSVDownload(obj){
+      const csv = asCSVRow(obj);
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+      a.download = `eagles-gf-volunteer-${stamp}.csv`;
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+
+    document.getElementById('downloadCSV').addEventListener('click', ()=>{
+      const data = getFormData();
+      // Visual feedback for roles selection
+      const rolesBox = document.getElementById('rolesBox');
+      const rolesError = document.getElementById('rolesError');
+      if(!data.roles || !data.roles.length){
+        rolesBox.classList.add('invalid');
+        rolesError.style.display = 'block';
+      }else{
+        rolesBox.classList.remove('invalid');
+        rolesError.style.display = 'none';
+      }
+      if(!validate(data)){
+        errorBox.textContent = 'Please complete required fields before downloading the CSV.';
+        errorBox.style.display = 'block';
+        setTimeout(()=> errorBox.style.display='none', 3500);
+        return;
+      }
+      triggerCSVDownload(data);
+    });
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      success.style.display = 'none';
+      errorBox.style.display = 'none';
+      const data = getFormData();
+      // Visual feedback for roles selection
+      const rolesBox = document.getElementById('rolesBox');
+      const rolesError = document.getElementById('rolesError');
+      if(!data.roles || !data.roles.length){
+        rolesBox.classList.add('invalid');
+        rolesError.style.display = 'block';
+      }else{
+        rolesBox.classList.remove('invalid');
+        rolesError.style.display = 'none';
+      }
+      if(!validate(data)){
+        errorBox.textContent = 'Please complete all required fields (including at least one role).';
+        errorBox.style.display = 'block';
+        return;
+      }
+      // Priority: Google Sheets (Apps Script) → Formspree → mailto fallback
+      try{
+        if(SHEETS_ENDPOINT){
+          // Try normal CORS JSON POST first
+          try{
+            const resp = await fetch(SHEETS_ENDPOINT, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data),
+            });
+            if(!resp.ok) throw new Error('Sheets endpoint error: '+resp.status);
+            try { const resJson = await resp.json(); if(resJson && resJson.ok === false) throw new Error(resJson.message||'Sheets rejected'); } catch(_) {}
+            success.style.display='block';
+            form.reset();
+          }catch(primaryErr){
+            // Retry with no-cors/plain to bypass preflight/CORS. Assume success if no network error.
+            await fetch(SHEETS_ENDPOINT, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify(data),
+            });
+            success.style.display='block';
+            form.reset();
+          }
+        } else if(FORMSPREE_ENDPOINT){
+          const resp = await fetch(FORMSPREE_ENDPOINT,{
+            method:'POST',
+            headers:{'Accept':'application/json','Content-Type':'application/json'},
+            body:JSON.stringify(data)
+          });
+          if(!resp.ok) throw new Error('Network response was not ok');
+          success.style.display='block';
+          form.reset();
+        } else {
+          const subject = encodeURIComponent('GF Day Helpers EOI – ' + data.fullName);
+          const bodyLines = [
+            `Timestamp: ${data.ts}`,
+            `Name: ${data.fullName}`,
+            `Email: ${data.email}`,
+            `Phone: ${data.phone}`,
+            `Affiliation: ${data.affiliation}`,
+            `Availability: ${data.availability}`,
+            `WWCC: ${data.wwcc}`,
+            `WWCC Expiry: ${data.wwccExpiry}`,
+            `Roles: ${data.roles.join('; ')}`,
+            `Notes: ${data.notes}`,
+            `Consent: ${data.consent ? 'Yes' : 'No'}`,
+            `Updates Opt‑in: ${data.updates ? 'Yes' : 'No'}`
+          ].join('%0D%0A');
+          window.location.href = `mailto:${encodeURIComponent("info@cranbourneeaglesjfc.au")}?subject=${subject}&body=${bodyLines}`;
+          success.style.display='block';
+          triggerCSVDownload(data);
+          form.reset();
+        }
+      }catch(err){
+        console.error(err);
+        errorBox.textContent = 'Submission failed. Please try again or email us directly.';
+        errorBox.style.display='block';
+      }
+    });
+  </script>
+
+  <!--
+    ✅ Google Sheets (Apps Script) Setup — 3 minute guide
+    1) Create a Google Sheet named, e.g., "GF Day EOI".
+    2) Extensions → Apps Script. Paste this code and deploy as Web App:
+
+    function doPost(e){
+      try{
+        var data = JSON.parse(e.postData.contents);
+        var ss = SpreadsheetApp.openById('PUT_SHEET_ID_HERE');
+        var sh = ss.getSheetByName('Sheet1') || ss.getSheets()[0];
+        if (sh.getLastRow() === 0){
+          sh.appendRow(['Timestamp','Full Name','Email','Phone','Affiliation','Availability','WWCC','WWCC Expiry','Roles','Notes','Consent','Updates']);
+        }
+        sh.appendRow([
+          data.ts, data.fullName, data.email, data.phone, data.affiliation,
+          data.availability, data.wwcc, data.wwccExpiry, (data.roles||[]).join('; '),
+          data.notes, data.consent ? 'Yes':'No', data.updates ? 'Yes':'No'
+        ]);
+        return ContentService.createTextOutput(JSON.stringify({ok:true}))
+              .setMimeType(ContentService.MimeType.JSON)
+      }catch(err){
+        return ContentService.createTextOutput(JSON.stringify({ok:false,message:String(err)}))
+              .setMimeType(ContentService.MimeType.JSON)
+      }
+    }
+
+    3) Replace SHEETS_ENDPOINT above with the Web App URL.
+       • Deployment: "Execute as Me" • Access: "Anyone" (or "Anyone with the link").
+       • Optional: add a simple token check.
+  -->
+</body>
+</html>
